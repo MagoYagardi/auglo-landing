@@ -10,10 +10,20 @@
  * de prometerle una llamada a alguien.
  */
 
+// El Marketplace de Vercel para Upstash for Redis no usa el nombre "genérico"
+// UPSTASH_REDIS_REST_URL/TOKEN que documentaba Upstash antes de que Vercel
+// absorbiera la integración: le antepone el nombre del store, acá
+// "UPSTASH_REDIS_KV_REST_API_*" (verificado contra el valor real inyectado,
+// 2026-09-05). KV_REST_API_URL/TOKEN quedan como último fallback para quien
+// use Vercel KV clásico o haya copiado el valor a mano.
 const URL_BASE =
-  process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  process.env.UPSTASH_REDIS_KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.KV_REST_API_URL;
 const TOKEN =
-  process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  process.env.UPSTASH_REDIS_KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.KV_REST_API_TOKEN;
 
 export function estaConfigurado(): boolean {
   return Boolean(URL_BASE && TOKEN);
