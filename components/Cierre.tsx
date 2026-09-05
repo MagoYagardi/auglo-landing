@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { Reveal } from "./Reveal";
 
 // Cambiar por el repo público de la landing cuando exista (DEMO/06 §2).
 const GITHUB = "https://github.com/MagoYagardi";
@@ -84,7 +85,7 @@ export function Cierre() {
   }
 
   return (
-    <div className="grid gap-12 md:grid-cols-2 md:gap-16">
+    <Reveal className="grid gap-12 md:grid-cols-2 md:gap-16" stagger={0.15}>
       <div>
         <h2 className="expandido text-[length:var(--text-seccion)] font-bold leading-tight">
           Socios e interesados
@@ -150,6 +151,6 @@ export function Cierre() {
           )}
         </form>
       </div>
-    </div>
+    </Reveal>
   );
 }

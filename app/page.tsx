@@ -2,6 +2,7 @@ import { Demo } from "@/components/Demo";
 import { Cierre } from "@/components/Cierre";
 import { Filetes } from "@/components/Filetes";
 import { MapaUruguay } from "@/components/MapaUruguay";
+import { Reveal } from "@/components/Reveal";
 
 const COMPUERTAS = [
   {
@@ -46,7 +47,11 @@ export default function Home() {
   return (
     <>
       <header className="border-b border-rule">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 lg:px-10">
+        <Reveal
+          className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 lg:px-10"
+          y={10}
+          start="top 100%"
+        >
           <span className="expandido text-[1.15rem] font-bold tracking-tight">
             Auglo
           </span>
@@ -58,7 +63,7 @@ export default function Home() {
               Lista de espera
             </a>
           </nav>
-        </div>
+        </Reveal>
       </header>
 
       <main>
@@ -71,15 +76,21 @@ export default function Home() {
 
         <section className="border-b border-rule">
           <div className="mx-auto max-w-[1280px] px-6 py-16 lg:px-10 lg:py-20">
-            <h2 className="expandido max-w-[24ch] text-[length:var(--text-seccion)] font-bold leading-tight">
-              Lo que frena una llamada antes de discar
-            </h2>
-            <p className="mt-4 max-w-[52ch] leading-relaxed text-dim">
-              No son advertencias en un documento. Son condiciones en el código
-              que impiden la llamada, y no tienen forma de saltearse desde el
-              panel.
-            </p>
-            <ul className="mt-12 grid gap-px bg-rule sm:grid-cols-3">
+            <Reveal>
+              <h2 className="expandido max-w-[24ch] text-[length:var(--text-seccion)] font-bold leading-tight">
+                Lo que frena una llamada antes de discar
+              </h2>
+              <p className="mt-4 max-w-[52ch] leading-relaxed text-dim">
+                No son advertencias en un documento. Son condiciones en el
+                código que impiden la llamada, y no tienen forma de saltearse
+                desde el panel.
+              </p>
+            </Reveal>
+            <Reveal
+              as="ul"
+              stagger={0.12}
+              className="mt-12 grid gap-px bg-rule sm:grid-cols-3"
+            >
               {COMPUERTAS.map((c) => (
                 <li key={c.titulo} className="bg-ground py-6 sm:px-6 sm:py-2 sm:first:pl-0">
                   <h3 className="text-[1.05rem] font-semibold text-text">
@@ -90,34 +101,36 @@ export default function Home() {
                   </p>
                 </li>
               ))}
-            </ul>
+            </Reveal>
           </div>
         </section>
 
         <section id="tesis" className="border-b border-rule">
           <div className="mx-auto grid max-w-[1280px] gap-14 px-6 py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-20 lg:px-10 lg:py-24">
             <div>
-              <h2 className="expandido max-w-[20ch] text-[length:var(--text-seccion)] font-bold leading-tight">
-                Concesionarias primero. No concesionarias solamente.
-              </h2>
-              <div className="mt-6 flex max-w-[54ch] flex-col gap-4 leading-relaxed text-dim">
-                <p>
-                  Lo que se construye es un motor conversacional gobernado por
-                  evaluaciones: cada llamada deja telemetría, cada error se
-                  vuelve un caso de prueba, y cada agente tiene un objetivo
-                  declarado contra el que se lo mide. El recambio de vehículos es
-                  su primer test, no su límite.
-                </p>
-                <p>
-                  Ese motor no sabe de autos. Sabe de conversaciones con un
-                  objetivo, un límite y un dato que hay que traer. Por eso el
-                  mismo arnés atiende después a la cadena logística —dónde está
-                  el camión, si el chofer confirma, cuándo se libera el
-                  depósito— sin reescribirse.
-                </p>
-              </div>
+              <Reveal>
+                <h2 className="expandido max-w-[20ch] text-[length:var(--text-seccion)] font-bold leading-tight">
+                  Concesionarias primero. No concesionarias solamente.
+                </h2>
+                <div className="mt-6 flex max-w-[54ch] flex-col gap-4 leading-relaxed text-dim">
+                  <p>
+                    Lo que se construye es un motor conversacional gobernado por
+                    evaluaciones: cada llamada deja telemetría, cada error se
+                    vuelve un caso de prueba, y cada agente tiene un objetivo
+                    declarado contra el que se lo mide. El recambio de vehículos es
+                    su primer test, no su límite.
+                  </p>
+                  <p>
+                    Ese motor no sabe de autos. Sabe de conversaciones con un
+                    objetivo, un límite y un dato que hay que traer. Por eso el
+                    mismo arnés atiende después a la cadena logística —dónde está
+                    el camión, si el chofer confirma, cuándo se libera el
+                    depósito— sin reescribirse.
+                  </p>
+                </div>
+              </Reveal>
 
-              <ol className="mt-12 flex flex-col gap-px bg-rule">
+              <Reveal as="ol" stagger={0.1} className="mt-12 flex flex-col gap-px bg-rule">
                 {HORIZONTES.map((h) => (
                   <li
                     key={h.n}
@@ -136,10 +149,10 @@ export default function Home() {
                     </div>
                   </li>
                 ))}
-              </ol>
+              </Reveal>
             </div>
 
-            <div className="flex flex-col justify-center">
+            <Reveal className="flex flex-col justify-center" y={24}>
               <MapaUruguay className="w-full max-w-[420px] text-rule-hi" />
               <p className="mt-8 max-w-[42ch] text-[0.92rem] leading-relaxed text-dim">
                 Uruguay es el mercado y es el laboratorio. El corpus de llamadas
@@ -147,7 +160,7 @@ export default function Home() {
                 copiar— se produce acá. El camino para que además se procese acá
                 está escrito y tiene tres pasos; hoy vamos por el primero.
               </p>
-            </div>
+            </Reveal>
           </div>
         </section>
 
