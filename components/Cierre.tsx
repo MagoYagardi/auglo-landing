@@ -87,7 +87,7 @@ export function Cierre() {
     <div className="grid gap-12 md:grid-cols-2 md:gap-16">
       <div>
         <h2 className="expandido text-[length:var(--text-seccion)] font-bold leading-tight">
-          Socios e inversores
+          Socios e interesados
         </h2>
         <div className="mt-8">
           <Contador valor={total} />
