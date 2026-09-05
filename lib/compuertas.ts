@@ -80,12 +80,14 @@ export function dentroDeHorarioUy(ahora = new Date()): Rechazo | null {
   return null;
 }
 
-/** Un número por hora, tres por IP por hora. */
+const COOLDOWN_SEGUNDOS = 300;
+
+/** Un número cada 5 minutos, tres por IP en esa misma ventana. */
 export async function pasaRateLimit(
   e164: string,
   ip: string,
 ): Promise<Rechazo | null> {
-  const porNumero = await marcarUnaVez(`demo:rate:tel:${e164}`, 3600);
+  const porNumero = await marcarUnaVez(`demo:rate:tel:${e164}`, COOLDOWN_SEGUNDOS);
   if (!porNumero)
     return {
       codigo: 429,
@@ -94,7 +96,7 @@ export async function pasaRateLimit(
     };
 
   for (let i = 1; i <= 3; i++) {
-    if (await marcarUnaVez(`demo:rate:ip:${ip}:${i}`, 3600)) return null;
+    if (await marcarUnaVez(`demo:rate:ip:${ip}:${i}`, COOLDOWN_SEGUNDOS)) return null;
   }
   return {
     codigo: 429,
