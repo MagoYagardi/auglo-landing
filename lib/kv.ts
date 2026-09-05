@@ -10,8 +10,10 @@
  * de prometerle una llamada a alguien.
  */
 
-const URL_BASE = process.env.KV_REST_API_URL;
-const TOKEN = process.env.KV_REST_API_TOKEN;
+const URL_BASE =
+  process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const TOKEN =
+  process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 
 export function estaConfigurado(): boolean {
   return Boolean(URL_BASE && TOKEN);
