@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/*
+  Auglo — estructura de infra, materiales de automotora.
+  El razonamiento de cada decisión está en DEMO/05-landing.md.
+*/
+@theme {
+  --color-ground: #14100f;
+  --color-surface: #1e1817;
+  --color-surface-2: #251e1c;
+  --color-rule: #2e2523;
+  --color-rule-hi: #453734;
+  --color-bone: #e8e1d6;
+  --color-bone-2: #d9d0c2;
+  --color-ink: #191413;
+  --color-guinda: #9b2033;
+  --color-guinda-hi: #d4485e;
+  --color-text: #e5ded6;
+  --color-dim: #9a908a;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.4rem, 5vw, 3.7rem);
+  --text-seccion: clamp(1.6rem, 3.2vw, 2.5rem);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-ground);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ground);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* El eje de ancho de Archivo hace de segunda tipografía: misma voz, dos
+   volúmenes. Por eso no hay una familia display aparte, ni monoespaciada. */
+.expandido {
+  font-variation-settings: "wdth" 118;
+  letter-spacing: -0.022em;
+}
+.angosto {
+  font-variation-settings: "wdth" 88;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+::selection {
+  background: var(--color-guinda);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-guinda-hi);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"] {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
