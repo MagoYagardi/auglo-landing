@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   // En ensayo no se disca a nadie, así que las compuertas no tienen qué
   // proteger. En cualquier otro caso corren, y no se saltean.
   if (!ENSAYO) {
-    const fueraDeHorario = dentroDeHorarioUy();
+    const fueraDeHorario = dentroDeHorarioUy(telefono);
     if (fueraDeHorario) return no(fueraDeHorario);
 
     const limitado = await pasaRateLimit(telefono, ip);

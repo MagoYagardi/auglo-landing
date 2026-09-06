@@ -21,6 +21,92 @@ function formatear(campo: Campo, valor: string | number | null) {
   return String(valor);
 }
 
+function formatearFecha(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat("es-UY", {
+    timeZone: "America/Montevideo",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
+
+/**
+ * La cita es el mejor resultado posible de una llamada — por eso se destaca
+ * invirtiendo la luminancia (bloque oscuro sobre la ficha clara) en vez de
+ * sumar un color nuevo. Sigue la misma lógica de "los estados se leen por
+ * luminancia" que el resto del archivo.
+ */
+function CitaCard({ cita }: { cita: Sesion["cita"] }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.fromTo(
+      ref.current,
+      { opacity: 0, y: -6 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+    );
+  }, []);
+
+  if (!cita.fecha) return null;
+
+  return (
+    <div
+      ref={ref}
+      className="mx-5 mt-5 bg-ink px-5 py-4 text-bone sm:mx-7 sm:px-6"
+    >
+      <p className="angosto text-[0.72rem] font-bold text-[color-mix(in_srgb,var(--color-bone)_68%,transparent)]">
+        Cita agendada
+      </p>
+      <p className="tabular mt-1 text-[1.05rem] font-semibold sm:text-[1.15rem]">
+        {formatearFecha(cita.fecha)}
+      </p>
+      {cita.ref && (
+        <p className="mt-0.5 text-[0.85rem] text-[color-mix(in_srgb,var(--color-bone)_80%,transparent)]">
+          {cita.ref}
+        </p>
+      )}
+      <p className="mt-3 text-[0.72rem] leading-relaxed text-[color-mix(in_srgb,var(--color-bone)_60%,transparent)]">
+        Cita de prueba: no hay concesionaria real detrás de esta demo.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * dnc_inmediato_al_pedido (Decreto 132/022): reemplaza al indicador "en vivo"
+ * en vez de sumarse a él — el estado que importa mostrar ahora es que se
+ * dejó de contactar, no que la llamada sigue.
+ */
+function BajaIndicador() {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.fromTo(
+      ref.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.5, ease: "power2.out" },
+    );
+  }, []);
+
+  return (
+    <span
+      ref={ref}
+      className="flex shrink-0 items-center gap-2 text-[0.75rem] font-semibold text-guinda"
+    >
+      <span className="inline-flex h-2 w-2 shrink-0 rounded-full bg-guinda" />
+      dado de baja — no se lo vuelve a contactar
+    </span>
+  );
+}
+
 /**
  * Una fila de la ficha.
  *
@@ -110,18 +196,24 @@ export function Ficha({ sesion }: { sesion: Sesion | null }) {
               : "sin llamada en curso"}
           </p>
         </div>
-        {enVivo && (
-          <span className="flex shrink-0 items-center gap-2 text-[0.75rem] font-medium text-guinda">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-guinda opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-guinda" />
+        {sesion?.baja ? (
+          <BajaIndicador />
+        ) : (
+          enVivo && (
+            <span className="flex shrink-0 items-center gap-2 text-[0.75rem] font-medium text-guinda">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-guinda opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-guinda" />
+              </span>
+              {sesion!.estado === "discando" || sesion!.estado === "sonando"
+                ? "llamando"
+                : "en línea"}
             </span>
-            {sesion!.estado === "discando" || sesion!.estado === "sonando"
-              ? "llamando"
-              : "en línea"}
-          </span>
+          )
         )}
       </header>
+
+      {sesion?.cita.fecha && <CitaCard cita={sesion.cita} />}
 
       <dl className="divide-y divide-[color-mix(in_srgb,var(--color-ink)_11%,transparent)]">
         {ORDEN.map((campo) => (

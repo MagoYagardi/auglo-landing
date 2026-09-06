@@ -42,10 +42,25 @@ export function normalizarTelefonoUy(crudo: string): string | Rechazo {
 }
 
 /**
+ * Líneas propias del dueño del proyecto. El Decreto 132/022 protege a
+ * consumidores contactados comercialmente — no aplica a que el dueño pruebe
+ * su propio agente contra su propio teléfono. Autorizado 2026-09-02
+ * (+59897668583), ampliado 2026-09-06 a las otras dos líneas propias. NO se
+ * extiende a ningún otro número sin autorización explícita — ver memoria del
+ * repo `mago-linea-propia-llamable-siempre`.
+ */
+const NUMEROS_PROPIOS = new Set([
+  "+59897668583",
+  "+59891458407",
+  "+59898279118",
+]);
+
+/**
  * Decreto 132/022 Art. 6: lun–vie 09:00–21:00, sáb 09:00–19:00, hora de
  * Montevideo. Domingo no se llama. Espejo de `src/dialer.py:67`.
  */
-export function dentroDeHorarioUy(ahora = new Date()): Rechazo | null {
+export function dentroDeHorarioUy(e164: string, ahora = new Date()): Rechazo | null {
+  if (NUMEROS_PROPIOS.has(e164)) return null;
   const partes = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Montevideo",
     weekday: "short",

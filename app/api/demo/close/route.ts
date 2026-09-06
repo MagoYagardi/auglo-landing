@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { leer, escribir, apilar } from "@/lib/kv";
-import { autorizado } from "@/lib/elevenlabs";
+import { autorizado, tagConversacion } from "@/lib/elevenlabs";
 import { claveSesion, TTL_SESION, type Sesion } from "@/lib/sesion";
 
 export const runtime = "nodejs";
@@ -89,6 +89,14 @@ export async function POST(req: Request) {
     transcriptUrl: cuerpo.transcript_url ?? null,
     captura: cerrada.captura,
   });
+
+  const conversationId = datos?.conversation_id ?? sesion.conversationId;
+  if (conversationId) {
+    // Best-effort: si ElevenLabs está lento o el tag falla, no rompe el cierre.
+    tagConversacion(conversationId, sesion.nombre).catch((e) =>
+      console.error("[demo/close] tagConversacion", e),
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
