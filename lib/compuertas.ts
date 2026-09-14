@@ -49,11 +49,22 @@ export function normalizarTelefonoUy(crudo: string): string | Rechazo {
  * extiende a ningún otro número sin autorización explícita — ver memoria del
  * repo `mago-linea-propia-llamable-siempre`.
  */
-const NUMEROS_PROPIOS = new Set([
+export const NUMEROS_PROPIOS = new Set([
   "+59897668583",
   "+59891458407",
   "+59898279118",
+  // Confirmada por el dueño el 2026-09-12. Entró después de que un dígito
+  // transpuesto —585 en vez de 858— hiciera que se llamara a un desconocido a
+  // las 23:53 de un sábado. La lista se carga leyendo el número dos veces, y
+  // ante la duda no se carga: un número mal tipeado acá convierte a un tercero
+  // en una excepción del Decreto.
+  "+59892721858",
 ]);
+
+/** ¿Es una línea del dueño? Es la única excepción, y es por número. */
+export function esLineaPropia(e164: string): boolean {
+  return NUMEROS_PROPIOS.has(e164);
+}
 
 /**
  * Decreto 132/022 Art. 6: lun–vie 09:00–21:00, sáb 09:00–19:00, hora de
@@ -97,11 +108,26 @@ export function dentroDeHorarioUy(e164: string, ahora = new Date()): Rechazo | n
 
 const COOLDOWN_SEGUNDOS = 300;
 
-/** Un número cada 5 minutos, tres por IP en esa misma ventana. */
+/**
+ * Un número cada 5 minutos, tres por IP en esa misma ventana.
+ *
+ * **Las líneas propias no pasan por acá**, y el motivo es distinto del de la
+ * compuerta horaria. El horario protege a un consumidor de ser molestado; el
+ * rate limit protege la demo de que alguien la use de discador. Ninguna de las
+ * dos cosas aplica cuando el dueño prueba su propio agente contra su propio
+ * teléfono — y esperar cinco minutos entre intentos es exactamente lo que hace
+ * que no se itere.
+ *
+ * La excepción es por número y no por una bandera de entorno: un
+ * `DEMO_SIN_LIMITE=1` se queda prendido en producción, un número que no está en
+ * la lista no se cuela nunca.
+ */
 export async function pasaRateLimit(
   e164: string,
   ip: string,
 ): Promise<Rechazo | null> {
+  if (esLineaPropia(e164)) return null;
+
   const porNumero = await marcarUnaVez(`demo:rate:tel:${e164}`, COOLDOWN_SEGUNDOS);
   if (!porNumero)
     return {

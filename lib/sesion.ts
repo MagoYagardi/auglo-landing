@@ -45,6 +45,13 @@ export type Sesion = {
   terminacion: string | null;
   grabacionLista: boolean;
   conversationId?: string | null;
+  /**
+   * Lo que el agente afirmó y de dónde lo sacó. Cada entrada viene de una tool
+   * de lectura, no del modelo: es lo que permite auditar una afirmación hasta
+   * el dato que la produjo, y lo que la consola muestra para que se vea que el
+   * agente consulta en vez de recordar.
+   */
+  hechos?: { valor: string; fuente: string }[];
 };
 
 // Rangos de plausibilidad. No son validación de negocio: son la defensa contra
